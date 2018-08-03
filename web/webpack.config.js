@@ -8,7 +8,6 @@ const outputDirectory = "dist";
 module.exports = {
   entry: {
     index: "./src/client/index.js",
-    secondary: "./src/client/secondary.js"
   }
     ,
   output: {
@@ -39,9 +38,9 @@ module.exports = {
   },
   plugins: [
     //new CleanWebpackPlugin([outputDirectory]),
-    // new HtmlWebpackPlugin({
-    //   template: "./src/client/index.html",
-    //   filename: "./index.html"
-    // })
+    new HtmlWebpackPlugin({
+      template: "./src/client/index.html",
+      filename: "./index.html"
+    })
   ]
 };
