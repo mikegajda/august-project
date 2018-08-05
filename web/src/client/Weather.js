@@ -3,22 +3,12 @@ import React, { Component } from "react";
 export default class Weather extends Component {
 	constructor(props){
 		super(props)
-		this.state = {
-			loaded: false
-		}
 	}
 
-	componentDidMount(){
-		fetch("/api/weather")
-		.then(response => response.json())
-		.then(data => this.setState({weather: data, loaded: true}))
-	}
 
 	render () {
-		const { loaded, weather } = this.state;
-
-		if (loaded){
-			console.log(weather)
+		const { weather } = this.props;
+		if (weather.main !== undefined && weather.main.temp !== undefined){
 			let celsius = weather.main.temp - 273.15;
 			let fahrenheit = (weather.main.temp * (9.0/5.0)) - 459.67;
 			return (
@@ -29,8 +19,10 @@ export default class Weather extends Component {
 			)
 		}
 		else {
-			return <div>Loading...</div>
+			return <div>Error, are you sure you entered a real city?</div>
 		}
+
+		
 		
 	}
 }
