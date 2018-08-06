@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Weather from "./Weather"
 import LocationForm from "./LocationForm"
+import {geolocated} from 'react-geolocated';
 
-export default class App extends Component {
+class App extends Component {
 	constructor(props){
 		super(props)
 		this.state = {loaded: false};
@@ -30,3 +31,5 @@ export default class App extends Component {
 		
 	}
 }
+
+export default geolocated()(App);
