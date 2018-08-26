@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Weather from "./Weather"
 import LocationForm from "./LocationForm"
-import {geolocated} from 'react-geolocated';
 
 class App extends Component {
 	constructor(props){
@@ -13,6 +12,13 @@ class App extends Component {
 		fetch("/api/weather?city=" + city)
 		.then(response => response.json())
 		.then(data => this.setState({weather: data, loaded: true}))
+	}
+
+	getWeatherForCoordinates(lat, lon){
+		console.log("getWeatherForCoordinates", lat, lon)
+		fetch(`/api/weatherForCoordinates?lat=${lat}&lon=${lon}`)
+		.then(response => response.json())
+		.then(data => this.setState({weather: data, loaded: true}))
 
 	}
 
@@ -20,16 +26,16 @@ class App extends Component {
 		if (this.state.loaded){
 			return (
 				[ 
-					<LocationForm updateCity={this.updateCity.bind(this)} />, 
+					<LocationForm getWeatherForCoordinates={this.getWeatherForCoordinates.bind(this)} />, 
 					<Weather weather={ this.state.weather }/>
 				]
 			)
 		}
 		else {
-			return <LocationForm updateCity={this.updateCity.bind(this)} />
+			return <LocationForm getWeatherForCoordinates={this.getWeatherForCoordinates.bind(this)} />
 		}
 		
 	}
 }
 
-export default geolocated()(App);
+export default App;
