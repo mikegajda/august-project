@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Typeahead} from 'react-bootstrap-typeahead';
+import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 export default class LocationForm extends React.Component {
@@ -9,7 +9,8 @@ export default class LocationForm extends React.Component {
       locationQuery: '',
       place_id: '',
       coordinates: {},
-      locationSuggestions: []
+      locationSuggestions: [],
+      isLoading: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -44,13 +45,15 @@ export default class LocationForm extends React.Component {
   }
 
   getLocationSuggestions() {
+    this.setState({loading: true})
     console.log("getLocationSuggestions")
     fetch(`/api/places?q=${this.state.locationQuery}`)
     .then(response => response.json())
     .then(data => data.predictions.map((entry) => ({description: entry.description, place_id: entry.place_id})))
     .then(locationSuggestions => 
       this.setState({
-        locationSuggestions: locationSuggestions
+        locationSuggestions: locationSuggestions,
+        loading: false
       })
     );
   }
@@ -58,17 +61,27 @@ export default class LocationForm extends React.Component {
   render() {
     let component = this;
     return (
-      <Typeahead
-        onChange={(selected) => {
-          console.log(selected[0])
-          component.setState({
-            place_id: selected[0].place_id
-          }, component.getCoordinates)
-        }}
-        onInputChange={(text) => this.setState({locationQuery: text}, this.getLocationSuggestions.bind(this))}
-        options={this.state.locationSuggestions}
-        labelKey={"description"}
-      />
+      <form class="">
+        <div class="form-group row">
+        <label class="col-sm-2 col-form-label text-right">Enter a location</label>
+          <div class="col-sm-10">
+          <AsyncTypeahead
+            isLoading={this.state.loading}
+            onSearch={(query) => this.setState({locationQuery: query}, this.getLocationSuggestions.bind(this))}
+            onChange={(selected) => {
+              console.log(selected[0])
+              component.setState({
+                place_id: selected[0].place_id
+              }, component.getCoordinates)
+            }}
+            options={this.state.locationSuggestions}
+            labelKey={"description"}
+            promptText={"Type a location"}
+          />
+          </div>
+        </div>
+      </form>
+    
     );
   }
 }
